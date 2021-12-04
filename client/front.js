@@ -8,7 +8,9 @@ new Vue({
         name: '',
         value: ''
       },
-      contacts: []
+      contacts: [
+        {id: 1, name: 'Alex', value: 'sample value', marked: false}
+      ]
     }
   },
   methods: {
@@ -18,6 +20,13 @@ new Vue({
       this.contacts.push({...contact, id: Date.now()})
       //очищаем инпуты после отправки формы
       this.form.name = this.form.value = ''
+    },
+    markContact(id) {
+      const contact = this.contacts.find(c => c.id === id)
+      contact.marked = true
+    },
+    removeContact(id) {
+      console.log(id)
     }
   }
 })
