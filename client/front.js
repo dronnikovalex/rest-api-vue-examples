@@ -8,16 +8,19 @@ new Vue({
         name: '',
         value: ''
       },
-      contacts: [
-        {id: 1, name: 'Alex', value: 'sample value', marked: false}
-      ]
+      contacts: []
+    }
+  },
+  computed: {
+    canCreate() {
+      return this.form.value.trim() && this.form.name.trim()
     }
   },
   methods: {
     createContact() {
       const {...contact} = this.form
       //добавляем в массив карточек контактов новый контакт
-      this.contacts.push({...contact, id: Date.now()})
+      this.contacts.push({...contact, id: Date.now(), marked: false})
       //очищаем инпуты после отправки формы
       this.form.name = this.form.value = ''
     },
@@ -26,7 +29,7 @@ new Vue({
       contact.marked = true
     },
     removeContact(id) {
-      console.log(id)
+      this.contacts = this.contacts.filter(c => c.id !== id)
     }
   }
 })
