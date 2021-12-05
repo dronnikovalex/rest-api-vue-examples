@@ -2,6 +2,13 @@ const express = require('express')
 const path = require('path')
 const app = express()
 
+const CONTACTS = [
+  {id: 1, name: 'Alex', value: 'Alex value', marked: false},
+  {id: 1, name: 'Ivan', value: 'Ivan value', marked: false},
+  {id: 1, name: 'Miwa', value: 'Miwa value', marked: false},
+  {id: 1, name: 'Anna', value: 'Anna value', marked: false},
+]
+
 app.use(express.static(path.resolve(__dirname, 'client')))
 
 app.get('*', (req, res) => {

@@ -29,7 +29,7 @@
           </div>
         </div>
         <br>
-        <button type="submit" class="btn btn-primary">Отправить</button>
+        <button type="submit" class="btn btn-primary" :disabled="!canCreate">Создать</button>
       </form>
       
       <br>
@@ -37,10 +37,10 @@
       <div v-if="contacts.length">
         <div class="card mb-3" v-for="contact in contacts">
           <div class="card-body">
-            <h5 class="card-title">{{contact.name}}</h5>
+            <h5 class="card-title" :style="{color: contact.marked ? 'red' : 'black'}" >{{contact.name}}</h5>
             <p class="card-text">{{contact.value}}</p>
-            <button class="btn btn-primary">Отменить</button>
-            <button class="btn btn-danger">Удалить</button>
+            <button class="btn btn-primary" @click="markContact(contact.id)" :disabled="contact.marked">Отменить</button>
+            <button class="btn btn-danger" @click="removeContact(contact.id)">Удалить</button>
           </div>
         </div>
       </div>
