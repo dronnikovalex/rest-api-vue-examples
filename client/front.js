@@ -1,9 +1,20 @@
 import Vue from 'https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.esm.browser.js'
 
+Vue.component('loader', {
+  template: `
+  <div style="display: flex; justify-content: center; align-items: center ">
+    <div class="spinner-border" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+  `
+})
+
 new Vue({
   el: '#app',
   data() {
     return {
+      loading: false,
       form: {
         name: '',
         value: ''
@@ -17,19 +28,49 @@ new Vue({
     }
   },
   methods: {
-    createContact() {
-      const {...contact} = this.form
-      //добавляем в массив карточек контактов новый контакт
-      this.contacts.push({...contact, id: Date.now(), marked: false})
+    async createContact() {
+      const { ...contact } = this.form
+
+      let newContanct = await request('/api/contacts', 'POST', contact)
+
+      this.contacts.push(newContanct)
       //очищаем инпуты после отправки формы
       this.form.name = this.form.value = ''
     },
-    markContact(id) {
+    async markContact(id) {
       const contact = this.contacts.find(c => c.id === id)
-      contact.marked = true
+      const reponse = await request(`/api/contacts/${id}`, 'PUT', {...contact, marked: true})
+      contact.marked = reponse.marked
     },
-    removeContact(id) {
+    async removeContact(id) {
+      await request(`/api/contacts/${id}`, 'DELETE')
       this.contacts = this.contacts.filter(c => c.id !== id)
     }
+  },
+  async mounted() {
+    this.loading = true
+    this.contacts = await request('/api/contacts')
+    this.loading = false
   }
 })
+
+async function request(url, method = "GET", data = null) {
+  try {
+    const headers = {}
+    let body
+
+    if (data) {
+      headers['Content-Type'] = 'application/json'
+      body = JSON.stringify(data)
+    }
+
+    const response = await fetch(url, {
+      method,
+      headers,
+      body
+    })
+    return response.json()
+  } catch (e) {
+    console.warn('Error', e.message)
+  }
+}
